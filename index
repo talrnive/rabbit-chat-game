@@ -1,51 +1,149 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ביטהאב - משחק צ'אט הארנב</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-        }
-        #chat {
-            width: 90%;
-            max-width: 400px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-        }
-        .message {
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            max-width: 70%;
-        }
-        .rabbit {
-            align-self: flex-start;
-            background: #b3e5fc;
-        }
-        .user {
-            align-self: flex-end;
-            background: #dcf8c6;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>איתמר פוגש ארנב - צ'אט משחק</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #chat {
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            max-width: 70%;
+        }
+        .rabbit {
+            align-self: flex-start;
+            background: #b3e5fc;
+        }
+        .user {
+            align-self: flex-end;
+            background: #dcf8c6;
+        }
+        .emoji {
+            font-size: 20px;
+        }
+        #input-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background: #ff7043;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>ביטהאב - משחק צ'אט הארנב</h1>
-    <div id="chat"></div>
-    <div id="input-area">
-        <input type="text" id="user-input" placeholder="הקלד תשובה..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendAnswer()">שלח</button>
-    </div>
-    <script src="rabbit-chat.js"></script>
+    <h1>איתמר פוגש ארנב - צ'אט משחק</h1>
+    <div id="chat"></div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="הקלד תשובה..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendAnswer()">שלח</button>
+    </div>
+    
+    <script>
+        const chat = document.getElementById("chat");
+        const userInput = document.getElementById("user-input");
+        const questions = [
+            { q: "מה ההורים כל הזמן אומרים בשיר ההורים המקטרים?", a: ["צריך"] },
+            { q: "מה איתמר מלמד את הארנב לעשות בשיר החולצה?", a: ["חולצה"] },
+            { q: "מה הארנב חושב על ילדים בשיר הילדים המסוכנים?", a: ["טורפים"] },
+            { q: "מה איתמר חושב על ארנבים בשיר הארנב המסוכן?", a: ["טורפים"] },
+            { q: "מה מתחרז עם המילה ציפה בלחש הקסמים?", a: ["דריפה"] },
+            { q: "מה איתמר לוחש לעצמו כשהוא מפחד?", a: ["קסמים", "קסם"] },
+            { q: "איך הארנב מתאר את הבגד המושלם שלו?", a: ["פרווה"] },
+            { q: "למה איתמר מתקשה עם כפתורים?", a: ["זמן", "מסובך"] },
+            { q: "איך הארנב מתאר ילדים בשיר הילדים המסוכנים?", a: ["רמאים", "שקרנים", "מטונפים", "מלוכלכים"] },
+            { q: "מה איתמר והארנב מבינים בסוף השיר האחרון?", a: ["שאין ממה לפחד", "חברים"] }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let retry = false;
+
+        function addMessage(text, sender, emoji = "") {
+            const message = document.createElement("div");
+            message.classList.add("message", sender);
+            message.innerHTML = emoji + " " + text;
+            chat.appendChild(message);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function askQuestion() {
+            if (currentQuestionIndex === 0) {
+                addMessage("ברוך הבא למשחק! הארנב ישאל אותך שאלות על השירים ואתה צריך לענות. אם תענה נכון, תמשיך לשאלה הבאה. אם תטעה, תקבל ניסיון נוסף! ", "rabbit");
+                setTimeout(() => addMessage(questions[currentQuestionIndex].q, "rabbit"), 2000);
+            } else {
+                addMessage(questions[currentQuestionIndex].q, "rabbit");
+            }
+        }
+        
+        function sendAnswer() {
+            const answer = userInput.value.trim();
+            if (!answer) return;
+            addMessage(answer, "user");
+            userInput.value = "";
+            
+            if (questions[currentQuestionIndex].a.some(word => answer.toLowerCase().includes(word.toLowerCase()))) {
+                addMessage("נכון מאוד! ", "rabbit", " ");
+                currentQuestionIndex++;
+                retry = false;
+                if (currentQuestionIndex < questions.length) {
+                    setTimeout(askQuestion, 1000);
+                } else {
+                    addMessage("כל הכבוד, סיימת את המשחק! ", "rabbit");
+                }
+            } else {
+                if (retry) {
+                    addMessage("לא נכון.. אבל לא נורא! נמשיך הלאה. ", "rabbit", " ");
+                    currentQuestionIndex++;
+                    retry = false;
+                    if (currentQuestionIndex < questions.length) {
+                        setTimeout(askQuestion, 1000);
+                    } else {
+                        addMessage("כל הכבוד, סיימת את המשחק! ", "rabbit");
+                    }
+                } else {
+                    addMessage("לא נכון... נסה שוב. ", "rabbit", " ");
+                    retry = true;
+                }
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendAnswer();
+            }
+        }
+        
+        askQuestion();
+    </script>
 </body>
 </html>
