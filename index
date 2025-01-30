@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ביטהאב - משחק צ'אט הארנב</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #chat {
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            max-width: 70%;
+        }
+        .rabbit {
+            align-self: flex-start;
+            background: #b3e5fc;
+        }
+        .user {
+            align-self: flex-end;
+            background: #dcf8c6;
+        }
+    </style>
+</head>
+<body>
+    <h1>ביטהאב - משחק צ'אט הארנב</h1>
+    <div id="chat"></div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="הקלד תשובה..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendAnswer()">שלח</button>
+    </div>
+    <script src="rabbit-chat.js"></script>
+</body>
+</html>
